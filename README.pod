@@ -1,0 +1,93 @@
+=pod
+
+README for package 'flex++bison++'
+
+=head1 DESCRIPTION
+
+flex++bison++ - A distribution based on Alain Coetmeur's C++ ports
+of the popular scanner- and parser-generators.
+
+Additionally, this package contains Eric Beuscher's (X)emacs LISP
+code with major editing modes for flex, bison, and their respective
+C++ variants.
+
+=head1 INSTALLATION
+
+Issue the following commands to the shell:
+
+ sh ./configure
+ make
+ make install
+
+See the file INSTALL in the top-level distribution
+directory for details.
+
+=head1 CONFIGURATION OPTIONS
+
+The configure script has several "--enable-PACKAGE"
+and "--with-PACKAGE=VALUE" options.  See "configure --help"
+for details.
+
+=head1 BUILD FROM CVS
+
+To build from CVS, you need the GNU utilities
+automake, autoconf, and libtool.  If
+you have these, you can just run the top-level
+script:
+
+ sh ./autogen.sh
+
+This will create the 'configure' script and other
+necessary build files.
+
+=head1 EMACS CONFIGURATION
+
+Add something like the following to your ~/.emacs to get autoloading
+working correctly:
+
+ ;;;-----------------------------------------------------------------------
+ ;;; flex(++), bison(++) modes
+ ;;;-----------------------------------------------------------------------
+ (autoload 'make-regexp "make-regexp" "Trie generation utility" t)
+ (autoload 'flex-mode "flex-mode" "Major mode for Lex/Flex sources" t)
+ (autoload 'bison-mode "bison-mode" "Major mode for Yacc/Bison sources" t)
+ (autoload 'flex++-mode "flex++-mode" "Major mode for Flex++ sources" t)
+ (autoload 'bison++-mode "bison++-mode" "Major mode for Bison++ sources" t)
+ (setq auto-mode-alist (cons '("\\.l$" . flex-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.y$" . bison-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.yy$" . bison++-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.ll$" . flex++-mode) auto-mode-alist))
+
+
+=head1 KNOWN BUGS
+
+Probably many.
+
+=head1 ACKNOWLEDGEMENTS
+
+flex++ and bison++ by Alain Coetmeur.
+
+flex-mode.el by Eric Beuscher,
+bison-mode.el Copyright (C) 1998 Eric Beuscher.
+
+This distribution was compiled as part of the DWDS project
+("Digitales Wörterbuch deutscher Sprache"
+= "digital dictionary of the German language") at the
+Berlin-Brandenburgische Akademie der Wissenschaften.
+For details on the DWDS project, visit: http://www.dwds.de.
+
+=head1 BROUGHT TO YOU BY
+
+Bryan Jurish E<lt>moocow@ling.uni-potsdam.deE<gt>
+
+=head1 SEE ALSO
+
+ftp://iecc.com/pub/file/bison++flex++
+lex(1).
+flex(1).
+flex++(1).
+yacc(1).
+bison(1).
+bison++(1).
+
+=cut

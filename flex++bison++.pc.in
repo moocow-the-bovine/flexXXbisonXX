@@ -1,0 +1,23 @@
+# -*- Mode: Shell-Script -*-
+
+# File: flex++bison++.pc
+# Description:
+#   + pkg-config data for bumble-bee lex/yacc c(++) libraries
+#   + auto-generated from flex++bison++.pc.in
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+includedir=@includedir@
+libdir=@libdir@
+datadir=@datadir@
+pkgdatadir=${datadir}/@PACKAGE@
+
+skeldir=${pkgdatadir}
+cppflags=-I${includedir}
+ldadd=-lflexlib
+
+Name: flex++bison++
+Description: C/C++ flex/bison ports by Alain Coetmeur
+Version: @VERSION@
+Libs: -L${libdir} ${ldadd}
+Cflags: ${cppflags}
