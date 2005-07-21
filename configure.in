@@ -1,0 +1,233 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_PREREQ(2.5)
+
+AC_INIT(flex++bison++, [0.0.5], [moocow@ling.uni-potsdam.de])
+
+dnl
+dnl source && aux dir
+dnl
+AC_CONFIG_AUX_DIR(config)
+
+dnl
+dnl use automake
+dnl
+AM_INIT_AUTOMAKE([flex++bison++], [0.0.5])
+
+dnl
+dnl use autoheader
+dnl
+AM_CONFIG_HEADER([config/config.h])
+
+dnl
+dnl default prefix
+dnl
+AC_PREFIX_DEFAULT(/usr/local)
+
+dnl
+dnl check for MINIX
+dnl
+AC_MINIX
+
+dnl cc
+AC_PROG_CC
+
+dnl
+dnl check for POSIX flags
+dnl
+AC_ISC_POSIX
+
+dnl c++
+AC_PROG_CXX
+dnl AC_PROG_CPP
+
+dnl v--- needid if Makefile.am uses _LTLIBRARIES targets
+dnl AC_PROG_LIBTOOL
+dnl v--- static-only (_LIBRARIES targets)
+AC_PROG_RANLIB
+
+dnl lex & yacc for build (needed for automake)
+AM_PROG_LEX
+
+dnl
+dnl do we want to use flex to bootstrap the build?
+dnl
+AC_ARG_ENABLE(bootstrap,
+	AC_HELP_STRING([--enable-bootstrap],[enable bootstrapping (default=no)]))
+
+dnl
+dnl Check if we're bundled (HACK!)
+dnl
+dnl if test "$FSMBUNDLED" = "yes" ; then
+dnl   AC_MSG_ERROR([Bundled!])
+dnl else
+dnl   AC_MSG_ERROR([NON-Bundled!])
+dnl fi
+
+
+
+dnl are we using flex (*can* we bootstrap the build)?
+AC_MSG_CHECKING([whether to bootstrap the build])
+if test "$LEX" != "flex" ; then
+  ## -- no flex
+  AC_MSG_RESULT([no (lex is not flex)])
+  flexxx_make_scan_c='cp initscan.c scan.c; touch scan.c'
+elif test "$enable_bootstrap" != "yes" ; then
+  AC_MSG_RESULT(no)
+  flexxx_make_scan_c='cp initscan.c scan.c; touch scan.c'
+else
+  ## -- got flex
+  AC_MSG_RESULT(yes)
+  flexxx_make_scan_c='$(LEX) $(FLEX_FLAGS) $(COMPRESSION) scan.l >scan.c'
+fi
+AC_SUBST(flexxx_make_scan_c)
+
+dnl
+dnl yacc for build (needed by automake for ".y.c" rules)
+dnl
+AC_PROG_YACC
+
+dnl -- copied from bison++/configure.in
+AC_CONST
+AC_STDC_HEADERS
+AC_HAVE_HEADERS(string.h stdlib.h memory.h)
+AC_HAVE_FUNCS(strerror)
+AC_ALLOCA
+
+dnl
+dnl do we have 'osfcn.h' (not in gcc-2.95.4)
+dnl
+AC_CHECK_HEADER([osfcn.h],
+	[HAVE_OSFCN_H="1";
+	 AC_DEFINE([HAVE_OSFCN_H],[1],
+	 [Define this if you have the 'osfcn.h' header file])],
+	[HAVE_OSFCN_H="";
+	])
+if test -z "$HAVE_OSFCN_H" ; then
+   HACKED_HEADERS="osfcn.h"
+fi
+AC_SUBST(HACKED_HEADERS)
+
+dnl
+dnl debug ?
+dnl
+AC_MSG_CHECKING([whether to build debug version])
+AC_ARG_ENABLE(debug,
+	AC_HELP_STRING([--enable-debug],[build debug version (default=no)]))
+
+if test "$enable_debug" == "yes" ; then
+  AC_MSG_RESULT(yes)
+  CFLAGS="-g"
+else
+  AC_MSG_RESULT(no)
+  CFLAGS="-O2"
+  #CFLAGS="-O3 -fomit-frame-pointer -funroll-loops"
+fi
+
+dnl
+dnl subdirs: ./bison++/
+dnl
+MY_SUBDIRS=""
+AC_SUBST(MY_SUBDIRS)
+
+AC_MSG_CHECKING([whether to build bison++])
+AC_ARG_ENABLE(bison,
+	AC_HELP_STRING([--enable-bison],[build bison++ program (default=yes)]))
+
+if test "$enable_bison" == "no" ; then
+  AC_MSG_RESULT(no)
+else
+  enable_bison="yes"
+  MY_SUBDIRS="$MY_SUBDIRS bison++"
+  AC_MSG_RESULT(yes)
+fi
+
+dnl
+dnl subdirs: ./flex++/
+dnl
+AC_MSG_CHECKING([whether to build flex++])
+AC_ARG_ENABLE(flex,
+	AC_HELP_STRING([--enable-flex],[build flex++ program (default=yes)]))
+
+if test "$enable_flex" == "no" ; then
+  AC_MSG_RESULT(no)
+else
+  enable_flex="yes"
+  MY_SUBDIRS="$MY_SUBDIRS flex++"
+  AC_MSG_RESULT(yes)
+fi
+
+
+dnl
+dnl emacs-lisp stuff
+dnl
+AC_MSG_CHECKING([whether to compile emacs LISP files])
+AC_ARG_WITH(emacs,
+	AC_HELP_STRING([--with-emacs[=PROGRAM]],
+		[emacs program to compile site-lisp files (default=none/xemacs)]),
+	[enable_mylisp="yes"],[])
+dnl AC_ARG_WITH(site-lisp,
+dnl 	AC_HELP_STRING([--with-site-lisp[=PATH]],[path to emacs site-lisp directory (default=PREFIX/share/site-lisp)]),
+dnl 	[enable_elisp="yes"],[])
+
+if test "$enable_mylisp" == "yes" ; then
+  AC_MSG_RESULT(yes)
+  MY_SUBDIRS="$MY_SUBDIRS elisp"
+
+  dnl haha!
+  AM_PATH_LISPDIR
+
+  AC_MSG_CHECKING([for user-specifed emacs program])
+  if test -z "$with_emacs" -o "$with_emacs" == "yes" ; then
+    with_emacs="xemacs"
+  fi
+  AC_MSG_RESULT($with_emacs)
+  MY_EMACS="$with_emacs"
+
+
+  dnl if test -z "$with_site_lisp" ; then
+  dnl   with_site_lisp='${PREFIX}/share/site-lisp'
+  dnl fi
+  dnl SITELISP="$with_site_lisp"
+else
+  AC_MSG_RESULT(no)
+fi
+AC_SUBST(MY_EMACS)
+
+dnl
+dnl be nice and clean up the build dir (for 'distcheck')
+dnl
+build_debug="yup"
+if test -n "$build_debug" ; then
+  flexxx_distclean_files="scan.c parse.c parse.h"
+else
+  flexxx_distclean_files=""
+fi
+AC_SUBST(flexxx_distclean_files)
+
+
+dnl
+dnl pkg-config : program
+dnl
+AC_ARG_VAR(PKG_CONFIG, [How to run the pkg-config program])
+AC_ARG_VAR(PKG_CONFIG_PATH, [Directories to search for pkg-config])
+if test -z "$PKG_CONFIG" ; then
+  AC_PATH_PROG(PKG_CONFIG,pkg-config,[])
+fi
+
+dnl pkg-config: destination directory
+AC_ARG_WITH(pkgconfig-dir,
+	AC_HELP_STRING([--with-pkgconfig-dir=DIR], [install pkg-config metafile(s) in DIR (default=LIBDIR/pkgconfig)]),
+	[ac_cv_pkgconfigdir="$withval"])
+if test -z "$ac_cv_pkgconfigdir" ; then
+  ac_cv_pkgconfigdir="\$(libdir)/pkgconfig"
+fi
+pkgconfigdir="$ac_cv_pkgconfigdir"
+AC_SUBST(pkgconfigdir)
+
+
+dnl
+dnl output
+dnl
+AC_CONFIG_FILES(flex++bison++.pc)
+AC_CONFIG_FILES(config/Makefile flex++/Makefile bison++/Makefile elisp/Makefile Makefile)
+AC_OUTPUT

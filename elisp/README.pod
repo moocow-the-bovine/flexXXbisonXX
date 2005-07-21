@@ -1,0 +1,58 @@
+=pod
+
+README for fb++elisp
+
+=head1 DESCRIPTION
+
+fb++elisp - (X)emacs modes for Alain Coetmeur's flex++ and bison++.
+
+This package contains modes for flex, bison, and their respective
+variants 'flex++' and 'bison++' by Alain Coetmeur.
+
+=head1 INSTALLATION
+
+Issue the following commands to the shell:
+
+ cd fb++elisp/  # (or wherever you unpacked the distribution)
+
+ # (edit the Makefile to suit your system)
+
+ make
+ make install
+
+=head1 EMACS CONFIGURATION
+
+Add something like the following to your ~/.emacs to get autoloading
+working correctly:
+
+ ;;;-----------------------------------------------------------------------
+ ;;; flex(++), bison(++) modes
+ ;;;-----------------------------------------------------------------------
+ (autoload 'make-regexp "make-regexp" "Trie generation utility" t)
+ (autoload 'flex-mode "flex-mode" "Major mode for Lex/Flex sources" t)
+ (autoload 'bison-mode "bison-mode" "Major mode for Yacc/Bison sources" t)
+ (autoload 'flex++-mode "flex++-mode" "Major mode for Flex++ sources" t)
+ (autoload 'bison++-mode "bison++-mode" "Major mode for Bison++ sources" t)
+ (setq auto-mode-alist (cons '("\\.l$" . flex-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.y$" . bison-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.yy$" . bison++-mode) auto-mode-alist))
+ (setq auto-mode-alist (cons '("\\.ll$" . flex++-mode) auto-mode-alist))
+
+=head1 ACKNOWLEDGEMENTS
+
+'flex++' and 'bison++' by Alain Coetmeur.
+
+'flex-mode.el' and 'bison-mode.el' by Eric Beuscher.
+
+=head1 BROUGHT TO YOU BY
+
+Bryan Jurish E<lt>moocow@ling.uni-potsdam.deE<gt>
+
+=head1 SEE ALSO
+
+lex(1).
+flex(1).
+flex++(1).
+yacc(1).
+bison(1).
+bison++(1).
