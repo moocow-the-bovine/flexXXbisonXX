@@ -113,8 +113,7 @@ SRCDIR = @srcdir@
 srcdir = @srcdir@
 SRCINCLUDE = $(SRCDIR)/../include
 
-## --- these are equivalent
-AM_CPPFLAGS = -I$(SRCINCLUDE) \
+AM_CPPFLAGS = -I$(SRCINCLUDE) -I$(SRCDIR)/../config \
 	-DDEFAULT_SKELETON_FILE=\"$(SKELETON_FILE)\" \
 	-DDEFAULT_SKELETONHEADER_FILE=\"$(HEADERSKELETON_FILE)\"
 
