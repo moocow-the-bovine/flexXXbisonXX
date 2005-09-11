@@ -73,8 +73,7 @@ noinst_HEADERS = \
 SRCDIR = @srcdir@
 SRCINCLUDE = $(SRCDIR)/../include
 
-## --- these are equivalent
-AM_CPPFLAGS = -I$(SRCINCLUDE)
+AM_CPPFLAGS = -I$(SRCINCLUDE) -I$(SRCDIR)/../config
 
 # names of parser files
 PFILE = bison.cc
@@ -90,7 +89,7 @@ PFILES = -DXPFILE=\"$(pkgdatadir)/$(PFILE)\" \
 ##-----------------------------------------------------------------------
 # This file is different to pass the parser file names to the compiler.
 files.o: files.c
-	$(CC) -c $(PFILES) $(DEFS) $(CPPFLAGS) $(CFLAGS) \
+	$(CC) -c $(PFILES) $(DEFS) $(AM_CPPFLAGS) $(CPPFLAGS) $(CFLAGS) \
 	   $(srcdir)/files.c $(OUTPUT_OPTION)
 
 # MAKEINFO = makeinfo
