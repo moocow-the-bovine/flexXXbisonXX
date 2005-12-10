@@ -37,7 +37,8 @@
   "Major mode for editing flex files"
   
   ;; try to set the indentation correctly
-  (setq-default c-basic-offset 4)
+  ;(setq-default c-basic-offset 4)
+  (setq-default c-basic-offset 2)
   (make-variable-buffer-local 'c-basic-offset)
 
   (c-set-offset 'knr-argdecl-intro 0)
